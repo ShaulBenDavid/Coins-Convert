@@ -1,24 +1,20 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-
-const CALC_TYPE = ["SelectForm", "SelectTo"];
+import ClockUpdate from './Components/ClockUpdate';
+import ConvertForm from './Components/ConvertForm';
 
 function App() {
-  const [myValue, setMyValue] = useState('');
+  const [coinTypeAndValue, setcoinTypeAndValue] = useState([]);
   const [calcValue, setCalcValue] = useState('');
-  const [coinsKeys, setCoinsKeys] = useState([]);
-  const [coinsValues, setCoinsValues] = useState([]);
-  const [coinClacValueFrom, setCoinCalcValueFrom] = useState(1);
-  const [coinClacValueTo, setCoinCalcValueTo] = useState(1);
-
-  let nf = new Intl.NumberFormat('en-US');
+  const [updateTime, setUpdateTime] = useState('');
 
   useEffect(() => {
     const getCoinsValue = async () => {
       const response = await fetch("https://v6.exchangerate-api.com/v6/2b4a22f2934a0dc9f5c28854/latest/USD");
       const data = await response.json();
-      setCoinsKeys(Object.keys(data.conversion_rates));
-      setCoinsValues(Object.values(data.conversion_rates));
+      console.log(data);
+      setcoinTypeAndValue(Object.entries(data.conversion_rates));
+      setUpdateTime(data.time_last_update_utc);
     };
     
     getCoinsValue();
@@ -26,51 +22,30 @@ function App() {
     
   }, []);
 
-  
-
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    let calc = ((myValue / coinClacValueFrom) * coinClacValueTo).toFixed(2);
-    calc = nf.format(calc);
-    setCalcValue(calc);
+  const addCalcValue = (event) => {
+    setCalcValue(event);
   }
-
-  const handleChange = (event) => {
-    const value = event.target.value;
-    setMyValue(value);
-  }
-
-  const HandleSelect = (event, id) => {
-    console.log(event.target.value, id);
-    if (id === 0) {
-      setCoinCalcValueFrom(coinsValues[event.target.value]) 
-    } else {
-      setCoinCalcValueTo(coinsValues[event.target.value])
-    }
-  }
-
 
   return (
     <div className="App">
-      <form onSubmit={handleSubmit}>
-        <input type="number" onChange={handleChange} value={myValue}/>
+      <div className="content-warpper">
+        <div className="content-container">
 
-        {CALC_TYPE.map((e, i) => {
-          return (
-            <select name={e} id="coins" onChange={(event) => HandleSelect(event,i)} key={i}>
-            {coinsKeys.map((e, i) => {
-              return (
-                    <option value={i} key={i}>{e}</option>
-              )}) 
-            }
-          </select>
-          )
-        })}
-        <button type='submit'>Claculate</button>
-      </form>
-      {calcValue && <p>{calcValue}</p>}
+          <header className='header-container'>
+            <h1>Money Converter</h1>
+            <ClockUpdate updateTime={updateTime} />
+          </header>
+
+          <div className='form-container'>
+            <ConvertForm
+              coinTypeAndValue={coinTypeAndValue}
+              addCalcValue={addCalcValue}
+            />
+            {calcValue && <p>{calcValue}</p>}
+          </div>
+          
+        </div>
+      </div>
     </div>
   );
 }
