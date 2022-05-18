@@ -1,5 +1,5 @@
 import * as S from './style';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Selection from '../Selection';
 import Button from '../Button';
 
@@ -11,12 +11,17 @@ const ConvertForm = ({ coinTypeAndValue, addCalcValue }) => {
     const [coinClacValueTo, setCoinCalcValueTo] = useState(1);
 
     let nf = new Intl.NumberFormat('en-US');
+    const focusInput = useRef();
+
+    useEffect(() => {
+        focusInput.current.focus()
+    },[]);
 
 
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        let calc = ((myValue / coinClacValueFrom) * coinClacValueTo).toFixed(2);
+        let calc = ((myValue / coinClacValueFrom) * coinClacValueTo).toFixed(3);
         calc = nf.format(calc);
         addCalcValue(calc);
     }
@@ -36,7 +41,7 @@ const ConvertForm = ({ coinTypeAndValue, addCalcValue }) => {
     
     return (
         <S.StyledForm onSubmit={handleSubmit}>
-            <S.StyledInput type="number" onChange={handleChange} value={myValue} placeholder="Choose Amount" />
+            <S.StyledInput type="number" ref={focusInput} onChange={handleChange} value={myValue} placeholder="Choose Amount" />
             <S.SelectionContainer>
                 { coinTypeAndValue &&
                     CALC_TYPE.map((e, i) => {

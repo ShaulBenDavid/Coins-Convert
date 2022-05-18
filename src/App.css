@@ -11,11 +11,12 @@
   margin-top: 10%;
   max-width: 750px;
   height: 500px;
-  background-color: #00b4fc;
+  background-color: #edf2f8;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 3px;
+  border: 2px solid #001449;
   -webkit-box-shadow: 4px 4px 0px 1px #012677; 
   box-shadow: 4px 4px 0px 1px #012677;
 }
@@ -35,10 +36,11 @@
 .header-container h1 {
   margin: 0;
   text-align: center;
+  color: #001449;
 }
 .header-container p {
   margin: 0;
-  color: w;
+  color: #001449;
 }
 
 /* Form */
@@ -53,7 +55,14 @@
 
 .form-container  p{
   font-size: 1.3rem;
-  color: white;
+  color: #001449;
   font-weight: bold;
   text-decoration: underline #001449;
+}
+
+@media only screen and (max-width: 600px) {
+  .content-warpper {
+    width: 95%;
+    margin-top: 30%;
+  }
 }
